@@ -1,0 +1,5 @@
+node_modules/
+dist/
+.gremlin/
+.env
+.DS_Store
