@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "gremlin": {
+      "command": "npm",
+      "args": ["run", "dev"]
+    }
+  }
+}
