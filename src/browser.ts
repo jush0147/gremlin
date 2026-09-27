@@ -17,7 +17,7 @@ type PublicAction = {
   id: string;
   kind: ActionKind;
   label: string;
-  role?: string;
+  role: string | undefined;
 };
 
 type IssuedAction = PublicAction & {
@@ -66,10 +66,10 @@ function assertAllowedTarget(rawUrl: string) {
 }
 
 export class BrowserSession {
-  private browser?: Browser;
-  private context?: BrowserContext;
-  private page?: Page;
-  private runDir?: string;
+  private browser: Browser | undefined;
+  private context: BrowserContext | undefined;
+  private page: Page | undefined;
+  private runDir: string | undefined;
   private maxSteps = 30;
   private steps = 0;
   private issued = new Map<string, IssuedAction>();
