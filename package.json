@@ -1,0 +1,26 @@
+{
+  "name": "gremlin",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "AI-guided, replayable exploratory testing for web apps",
+  "scripts": {
+    "dev": "tsx src/index.ts",
+    "check": "tsc --noEmit",
+    "build": "tsc",
+    "inspect": "npx @modelcontextprotocol/inspector npm run dev"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/server": "^2.0.0",
+    "playwright": "^1.55.0",
+    "zod": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "tsx": "^4.20.0",
+    "typescript": "^6.0.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
