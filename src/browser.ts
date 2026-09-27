@@ -49,6 +49,22 @@ function runId() {
   return nowIso().replace(/[:.]/g, "-");
 }
 
+function assertAllowedTarget(rawUrl: string) {
+  const url = new URL(rawUrl);
+  const localHosts = new Set(["localhost", "127.0.0.1", "::1"]);
+  const allowRemote = process.env.GREMLIN_ALLOW_REMOTE === "1";
+
+  if (!allowRemote && !localHosts.has(url.hostname)) {
+    throw new Error(
+      "Gremlin v0.1 only targets localhost by default. Set GREMLIN_ALLOW_REMOTE=1 yourself to opt into remote targets."
+    );
+  }
+
+  if (!["http:", "https:"].includes(url.protocol)) {
+    throw new Error("Gremlin only supports http:// and https:// targets.");
+  }
+}
+
 export class BrowserSession {
   private browser?: Browser;
   private context?: BrowserContext;
@@ -61,6 +77,7 @@ export class BrowserSession {
   private actionLog: ActionLog[] = [];
 
   async start(options: StartOptions) {
+    assertAllowedTarget(options.url);
     await this.closeBrowserOnly();
 
     this.maxSteps = options.maxSteps;
@@ -163,17 +180,25 @@ export class BrowserSession {
       if (!meta) continue;
 
       let kind: ActionKind = "click";
+      const fillableInputTypes = new Set([
+        "text",
+        "email",
+        "search",
+        "url",
+        "tel",
+        "password",
+        "number",
+        "date",
+        "datetime-local",
+        "month",
+        "time",
+        "week",
+      ]);
+
       if (
         meta.tag === "textarea" ||
         meta.tag === "select" ||
-        meta.type === "text" ||
-        meta.type === "email" ||
-        meta.type === "search" ||
-        meta.type === "url" ||
-        meta.type === "tel" ||
-        meta.type === "password" ||
-        meta.type === "number" ||
-        meta.tag === "input"
+        (meta.tag === "input" && fillableInputTypes.has(meta.type ?? "text"))
       ) {
         kind = meta.tag === "select" ? "select" : "fill";
       }
